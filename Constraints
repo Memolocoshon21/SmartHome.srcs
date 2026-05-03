@@ -1,0 +1,148 @@
+## ============================================================
+##  CONSTRAINTS (XDC) — CHAPA_CPU para Basys3 / Nexys A7
+##  Archivo : 12_Constraints.xdc
+##
+##  Mapeo de pines del FPGA para conexión con ESP32
+##  y componentes físicos (relé, LEDs)
+##
+##  IMPORTANTE: Verificar voltaje de banco I/O de tu FPGA
+##  Los pines del ESP32 son 3.3V. El Basys3 usa 3.3V en JA/JB.
+##  El Nexys A7 también. Compatibles directamente.
+## ============================================================
+
+
+## ============================================================
+##  RELOJ DEL SISTEMA
+##  Basys3/Nexys A7: oscilador onboard de 100MHz en W5
+## ============================================================
+set_property PACKAGE_PIN W5      [get_ports CLK]
+set_property IOSTANDARD  LVCMOS33 [get_ports CLK]
+create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports CLK]
+
+
+## ============================================================
+##  RESET y ENABLE
+##  Conectados a botones del FPGA O a pines del ESP32
+##  Opción A (desarrollo): botones físicos del FPGA
+##  Opción B (producción): pines GPIO del ESP32
+## ============================================================
+
+## RESET → Botón BTNC (centro) del Basys3
+set_property PACKAGE_PIN U18     [get_ports RESET]
+set_property IOSTANDARD  LVCMOS33 [get_ports RESET]
+
+## ENABLE → Botón BTNU (arriba) del Basys3
+## En producción: conectar a GPIO del ESP32 (poner ENABLE=1 siempre activo)
+set_property PACKAGE_PIN T18     [get_ports ENABLE]
+set_property IOSTANDARD  LVCMOS33 [get_ports ENABLE]
+
+
+## ============================================================
+##  DATA_IN [7:0] — Entrada desde ESP32
+##  Conector PMOD JA (pines 1-8)
+##  Conectar: ESP32 GPIO → resistencia 33Ω → pin FPGA
+## ============================================================
+##  FPGA pin   PMOD JA   DATA_IN bit
+##  J1         JA[0]     DATA_IN[0]
+##  L2         JA[1]     DATA_IN[1]
+##  J2         JA[2]     DATA_IN[2]
+##  G2         JA[3]     DATA_IN[3]
+##  H1         JA[4]     DATA_IN[4]
+##  K2         JA[5]     DATA_IN[5]
+##  H2         JA[6]     DATA_IN[6]
+##  G3         JA[7]     DATA_IN[7]
+
+set_property PACKAGE_PIN J1      [get_ports {DATA_IN[0]}]
+set_property IOSTANDARD  LVCMOS33 [get_ports {DATA_IN[0]}]
+set_property PACKAGE_PIN L2      [get_ports {DATA_IN[1]}]
+set_property IOSTANDARD  LVCMOS33 [get_ports {DATA_IN[1]}]
+set_property PACKAGE_PIN J2      [get_ports {DATA_IN[2]}]
+set_property IOSTANDARD  LVCMOS33 [get_ports {DATA_IN[2]}]
+set_property PACKAGE_PIN G2      [get_ports {DATA_IN[3]}]
+set_property IOSTANDARD  LVCMOS33 [get_ports {DATA_IN[3]}]
+set_property PACKAGE_PIN H1      [get_ports {DATA_IN[4]}]
+set_property IOSTANDARD  LVCMOS33 [get_ports {DATA_IN[4]}]
+set_property PACKAGE_PIN K2      [get_ports {DATA_IN[5]}]
+set_property IOSTANDARD  LVCMOS33 [get_ports {DATA_IN[5]}]
+set_property PACKAGE_PIN H2      [get_ports {DATA_IN[6]}]
+set_property IOSTANDARD  LVCMOS33 [get_ports {DATA_IN[6]}]
+set_property PACKAGE_PIN G3      [get_ports {DATA_IN[7]}]
+set_property IOSTANDARD  LVCMOS33 [get_ports {DATA_IN[7]}]
+
+
+## ============================================================
+##  DATA_READY — Handshake de entrada desde ESP32
+##  Conector PMOD JA pin 9
+## ============================================================
+set_property PACKAGE_PIN D2      [get_ports DATA_READY]
+set_property IOSTANDARD  LVCMOS33 [get_ports DATA_READY]
+
+
+## ============================================================
+##  DATA_OUT [7:0] — Salida hacia ESP32
+##  Conector PMOD JB (pines 1-8)
+## ============================================================
+set_property PACKAGE_PIN A14     [get_ports {DATA_OUT[0]}]
+set_property IOSTANDARD  LVCMOS33 [get_ports {DATA_OUT[0]}]
+set_property PACKAGE_PIN A16     [get_ports {DATA_OUT[1]}]
+set_property IOSTANDARD  LVCMOS33 [get_ports {DATA_OUT[1]}]
+set_property PACKAGE_PIN B15     [get_ports {DATA_OUT[2]}]
+set_property IOSTANDARD  LVCMOS33 [get_ports {DATA_OUT[2]}]
+set_property PACKAGE_PIN B16     [get_ports {DATA_OUT[3]}]
+set_property IOSTANDARD  LVCMOS33 [get_ports {DATA_OUT[3]}]
+set_property PACKAGE_PIN A15     [get_ports {DATA_OUT[4]}]
+set_property IOSTANDARD  LVCMOS33 [get_ports {DATA_OUT[4]}]
+set_property PACKAGE_PIN A17     [get_ports {DATA_OUT[5]}]
+set_property IOSTANDARD  LVCMOS33 [get_ports {DATA_OUT[5]}]
+set_property PACKAGE_PIN C15     [get_ports {DATA_OUT[6]}]
+set_property IOSTANDARD  LVCMOS33 [get_ports {DATA_OUT[6]}]
+set_property PACKAGE_PIN C16     [get_ports {DATA_OUT[7]}]
+set_property IOSTANDARD  LVCMOS33 [get_ports {DATA_OUT[7]}]
+
+
+## ============================================================
+##  CHAPA_OPEN — Salida al módulo relé (via transistor NPN)
+##  Pin PMOD JB pin 9
+##  Circuito: FPGA_PIN → R(1kΩ) → Base NPN → Relé → Chapa
+## ============================================================
+set_property PACKAGE_PIN D14     [get_ports CHAPA_OPEN]
+set_property IOSTANDARD  LVCMOS33 [get_ports CHAPA_OPEN]
+
+
+## ============================================================
+##  CHAPA_LED [1:0] — LEDs de estado
+##  Conectar a LEDs onboard del Basys3 (LD0, LD1)
+##  LD0 (LED[0]) = CHAPA_LED[0] → Rojo  (acceso denegado)
+##  LD1 (LED[1]) = CHAPA_LED[1] → Verde (acceso correcto)
+##  Ambos encendidos = BLOQUEADO
+## ============================================================
+set_property PACKAGE_PIN U16     [get_ports {CHAPA_LED[0]}]
+set_property IOSTANDARD  LVCMOS33 [get_ports {CHAPA_LED[0]}]
+set_property PACKAGE_PIN E19     [get_ports {CHAPA_LED[1]}]
+set_property IOSTANDARD  LVCMOS33 [get_ports {CHAPA_LED[1]}]
+
+
+## ============================================================
+##  LOCKED — Avisa al ESP32 que el sistema está bloqueado
+##  Pin PMOD JB pin 10
+## ============================================================
+set_property PACKAGE_PIN C17     [get_ports LOCKED]
+set_property IOSTANDARD  LVCMOS33 [get_ports LOCKED]
+
+
+## ============================================================
+##  ATTEMPTS_LEFT [1:0] — Intentos restantes hacia ESP32
+##  Dos pines para que el ESP32 muestre en la app cuántos
+##  intentos le quedan al usuario (11=3, 10=2, 01=1, 00=0)
+## ============================================================
+set_property PACKAGE_PIN D18     [get_ports {ATTEMPTS_LEFT[0]}]
+set_property IOSTANDARD  LVCMOS33 [get_ports {ATTEMPTS_LEFT[0]}]
+set_property PACKAGE_PIN E17     [get_ports {ATTEMPTS_LEFT[1]}]
+set_property IOSTANDARD  LVCMOS33 [get_ports {ATTEMPTS_LEFT[1]}]
+
+
+## ============================================================
+##  CONFIGURACIÓN ADICIONAL DEL FPGA
+## ============================================================
+set_property CFGBVS          VCCO [current_design]
+set_property CONFIG_VOLTAGE  3.3  [current_design]
