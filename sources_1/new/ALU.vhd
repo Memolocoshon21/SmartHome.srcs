@@ -2,8 +2,8 @@
 --  COMPONENTE 1: ALU (Unidad Aritmético-Lógica)
 --  Archivo : 01_ALU.vhd
 --
---  Función  : Realiza operaciones aritméticas y lógicas de 8 bits.
---             La operación XOR es la que encripta el código de acceso.
+--  Función  : La operación XOR es la que encripta el código de acceso.
+--             
 --
 --  Entradas :
 --    A      [7:0]  Operando A  (viene del Acumulador)
@@ -33,14 +33,14 @@ entity ALU is
         OP     : in  STD_LOGIC_VECTOR(1 downto 0);
         RESULT : out STD_LOGIC_VECTOR(7 downto 0);
         FLAG_Z : out STD_LOGIC;
-        FLAG_C : out STD_LOGIC
+        Acarreo : out STD_LOGIC
     );
 end ALU;
 
 architecture RTL of ALU is
 
-    signal result_int : STD_LOGIC_VECTOR(7 downto 0);
-    signal carry_int  : STD_LOGIC;
+    signal resultado_interno : STD_LOGIC_VECTOR(7 downto 0);
+    signal carry_interno  : STD_LOGIC;
 
 begin
 
@@ -48,32 +48,32 @@ begin
     process(A, B, OP)
         variable sum : UNSIGNED(8 downto 0); -- 9 bits para capturar carry
     begin
-        carry_int <= '0';
+        carry_interno <= '0';
 
         case OP is
 
             when "00" =>   -- PASS: A pasa sin modificar
-                result_int <= A;
+                resultado_interno <= A;
 
             when "01" =>   -- XOR: encriptación bit a bit con clave maestra
-                result_int <= A XOR B;
+                resultado_interno <= A XOR B;
 
             when "10" =>   -- ADD: A + B, el bit 8 del resultado es carry
                 sum        := UNSIGNED('0' & A) + UNSIGNED('0' & B);
-                result_int <= STD_LOGIC_VECTOR(sum(7 downto 0));
-                carry_int  <= sum(8);
+                resultado_interno <= STD_LOGIC_VECTOR(sum(7 downto 0));
+                carry_interno  <= sum(8);
 
             when "11" =>   -- AND: máscara para aislar bits específicos
-                result_int <= A AND B;
+                resultado_interno <= A AND B;
 
             when others =>
-                result_int <= (others => '0');
+                resultado_interno <= (others => '0');
 
         end case;
     end process;
 
-    RESULT <= result_int;
-    FLAG_C <= carry_int;
-    FLAG_Z <= '1' when result_int = "00000000" else '0';
+    RESULT <= resultado_interno;
+    Acarreo <= carry_interno;
+    FLAG_Z <= '1' when resultado_interno = "00000000" else '0';
 
 end RTL;

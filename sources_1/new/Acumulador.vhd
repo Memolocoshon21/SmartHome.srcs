@@ -27,9 +27,10 @@ entity Acumulador is
         ENABLE   : in  STD_LOGIC;
         LOAD     : in  STD_LOGIC;
         DATA_IN  : in  STD_LOGIC_VECTOR(7 downto 0);
-        DATA_OUT : out STD_LOGIC_VECTOR(7 downto 0)
+        DATA_OUT : out STD_LOGIC_VECTOR(7 downto 0);
     );
 end Acumulador;
+
 
 architecture RTL of Acumulador is
 
