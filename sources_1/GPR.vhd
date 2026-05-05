@@ -31,22 +31,22 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity GPR is
     Port (
-        CLK      : in  STD_LOGIC;
-        RESET    : in  STD_LOGIC;
-        ENABLE   : in  STD_LOGIC;
-        WR_EN    : in  STD_LOGIC;
-        WR_SEL   : in  STD_LOGIC_VECTOR(1 downto 0);
-        RD_SEL   : in  STD_LOGIC_VECTOR(1 downto 0);
-        DATA_IN  : in  STD_LOGIC_VECTOR(7 downto 0);
-        DATA_OUT : out STD_LOGIC_VECTOR(7 downto 0);
-        R2_OUT   : out STD_LOGIC_VECTOR(7 downto 0)
+        CLK      : in  std_logic;
+        RESET    : in  std_logic;
+        ENABLE   : in  std_logic;
+        WR_EN    : in  std_logic;
+        WR_SEL   : in  std_logic_vector(1 downto 0);
+        RD_SEL   : in  std_logic_vector(1 downto 0);
+        DATA_IN  : in  std_logic_vector(7 downto 0);
+        DATA_OUT : out std_logic_vector(7 downto 0);
+        R2_OUT   : out std_logic_vector(7 downto 0)
     );
 end GPR;
 
 architecture RTL of GPR is
 
     -- Los cuatro registros en un arreglo
-    type REG_ARRAY is array (0 to 3) of STD_LOGIC_VECTOR(7 downto 0);
+    type REG_ARRAY is array (0 to 3) of std_logic_vector(7 downto 0);
     signal REGS : REG_ARRAY := (others => (others => '0'));
 
 begin

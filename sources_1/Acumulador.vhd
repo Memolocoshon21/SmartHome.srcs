@@ -22,12 +22,12 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity Acumulador is
     Port (
-        CLK      : in  STD_LOGIC;
-        RESET    : in  STD_LOGIC;
-        ENABLE   : in  STD_LOGIC;
-        LOAD     : in  STD_LOGIC;
+        CLK      : in  std_logic ;
+        RESET    : in  std_logic ;
+        ENABLE   : in  std_logic ;
+        LOAD     : in  std_logic ;
         DATA_IN  : in  STD_LOGIC_VECTOR(7 downto 0);
-        DATA_OUT : out STD_LOGIC_VECTOR(7 downto 0);
+        DATA_OUT : out STD_LOGIC_VECTOR(7 downto 0)
     );
 end Acumulador;
 
